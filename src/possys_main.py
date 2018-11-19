@@ -344,6 +344,7 @@ class mainMenu:
             print("5.NFCカード登録")
             print("6.NFCカード消去")
             print("7.ユーザー消去")
+            print("8以上は入力された数値で購入")
             print("select mode:")
             mode = input(">> ")
 
@@ -469,9 +470,21 @@ class mainMenu:
             elif mode == '7':    
                 print("当機能は未実装です。管理者へ問い合わせてください。")
 
-            # 変な値を入力されたとき
+            # 8以上はその金額で購入と見なす
             else:
-                print("1~7までの数値を入力してください。")
+                print(" %d 円の購入" %mode)
+                print("登録済みのNFCカードをタッチしてください。")
+                amount = -int(mode)
+                tag = self.idmRead.getMain()
+                userNum = self.database.checkIDm_userNum(tag)
+                if userNum == False:
+                    print("[WARNING]: カード照合時に内部エラーが発生しました。")
+                    continue
+                self.database.money(userNum, amount)
+                print("ご購入ありがとうございました。またのご利用をお待ちしております。")
+                wallet = self.database.checkWallet(tag)
+                print("\nあなたの残高は %d 円になりました。"%wallet)
+
             
             print("\n")
 
